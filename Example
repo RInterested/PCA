@@ -1,0 +1,97 @@
+# NICE EXAMPLE WITH PLOTS. DON'T REMEMBER WHERE FROM.
+
+x <- c(2.5, 0.5, 2.2, 1.9, 3.1, 2.3, 2.1, 1.0, 1.5, 1.1)
+y <- c(2.4, 0.7, 2.9, 2.2, 3.0, 2.7, 1.6, 1.1, 1.6, 0.9)
+dat <- data.frame(cbind(x, y))
+dat$x <- c(dat$x - mean(dat$x))
+dat$y <- c(dat$y - mean(dat$y))
+
+par(mfrow = c(2,3))
+
+plot(dat, pch = 19, col="dark gray", 
+     xlim = c(-1.5,1.5),ylim = c(-2,2))
+names <- c(1:10)
+text(dat$x, dat$y, labels=c(1:10), cex= 0.5, pos=2)
+
+
+fit <- lm(y ~ x, dat)
+abline(fit, col=rgb(red=0.2, green=0.2, blue=1.0, 
+                    alpha=0.2), lwd = 4)
+
+C <- cov(dat)
+eigen(C)
+v1 <- eigen(cov(dat))$vectors[,1]
+v2 <- eigen(cov(dat))$vectors[,2]
+
+arrows(x0 = -v1[1], y0 = -v1[2], x1 = v1[1], y1 = v1[2], 
+       code=2, col = 'dark red', lwd = 2)
+
+A <- rbind(v1, v2)
+B <- t(dat)
+Dat <- t(A%*%B)
+colnames(Dat) <- c("x","y")
+Dat <- as.data.frame(Dat)
+
+plot(Dat,pch = 19,col="dark red",
+     xlim = c(-2,2),ylim = c(-2,2))
+names <- c(1:10)
+text(Dat$x, Dat$y, labels=c(1:10), cex= 0.5, pos=2)
+
+
+arrows(x0 = -1.5, y0 = 0, x1 = 1.5, y1 = 0, 
+       code=2, col = 'dark red', lwd = 2)
+abline(h = 0, col=rgb(red=0.2, green=0.2, blue=1.0, 
+                           alpha=0.2), lwd = 4)
+
+plot(Dat,pch = 19,col="dark red",
+     xlim = c(-2,2),ylim = c(-2,2))
+text(Dat$x, Dat$y, labels=c(1:10), cex= 0.5, pos=2)
+
+points(dat, pch = 19, col="dark gray")
+text(dat$x, dat$y, labels=c(1:10), cex= 0.5, pos=2)
+
+
+for (i in 1: nrow(dat)){
+arrows(x0 = dat$x[i], y0 = dat$y[i], 
+       x1 = Dat$x[i], y1 = Dat$y[i], 
+    code=2, col=rgb(red=0.4, green=0.2, blue=0.2, 
+                    alpha=0.4), lwd = 1, cex=0.1)
+}
+
+arrows(x0 = -1.5, y0 = 0, x1 = 1.5, y1 = 0, 
+       code=2, col = 'dark red', lwd = 2)
+
+
+plot(dat, pch = 19, col="dark gray", 
+     xlim = c(-2,2),ylim = c(-2,2))
+names <- c(1:10)
+text(dat$x, dat$y, labels=c(1:10), cex= 0.5, pos=2)
+abline(fit, col=rgb(red=0.2, green=0.2, blue=1.0, 
+                    alpha=0.2), lwd = 4)
+arrows(x0 = -v2[1], y0 = -v2[2], x1 = v2[1], y1 = v2[2], 
+       ylim=c(-1,1),code=2, col = 'orange', lwd = 2)
+
+plot(Dat,pch = 19,col="orange", 
+     xlim = c(-2,2),ylim = c(-2,2))
+text(Dat$x, Dat$y, labels=c(1:10), cex= 0.5, pos=2)
+
+
+arrows(x0 = 0, y0 = -0.75, x1 = 0, y1 = 0.75, 
+       ylim=c(-1,1),code=2, col = 'orange', lwd = 2)
+
+plot(Dat,pch = 19,col="orange",
+     xlim = c(-2,2),ylim = c(-2,2))
+text(Dat$x, Dat$y, labels=c(1:10), cex= 0.5, pos=2)
+
+points(dat, pch = 19, col="dark gray")
+text(dat$x, dat$y, labels=c(1:10), cex= 0.5, pos=2)
+
+
+for (i in 1: nrow(dat)){
+    arrows(x0 = dat$x[i], y0 = dat$y[i], 
+           x1 = Dat$x[i], y1 = Dat$y[i], 
+           code=2, col=rgb(red=0.4, green=0.4, blue=0.2, 
+                           alpha=0.4), lwd = 1, cex=0.1)
+}
+arrows(x0 = 0, y0 = -0.75, x1 = 0, y1 = 0.75, 
+       ylim=c(-1,1),code=2, col = 'orange', lwd = 2)
