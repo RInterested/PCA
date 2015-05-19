@@ -1,0 +1,249 @@
+
+names <- c("JW","HS","BL", "RA", "LW", "PB", 
+           "SK", "KM", "MF", "ED", "PM", "LK", 
+           "AS", "JS", "SR", "CB", "SS", "AP")
+
+
+SAT <- c(1345, 1566, 1600, 1002, 1008, 999, 
+         1599, 1488, 950, 1567, 1497, 1300, 
+         1588, 1443, 1138, 1557, 1478, 1600)
+
+income <- c(150e3, 250e3, 300e3, 100e3, 110e3, 199e3,
+            240e3, 255e3, 75e3, 299e3, 300e3, 125e3,
+            400e3, 120e3, 86e3, 225e3, 210e3, 60e3)
+
+dat <- cbind(SAT, income)
+
+row.names(dat) <- names
+dat <- scale(dat, scale = T, center = T)
+dat <- as.data.frame(dat)
+C <- cov(dat)
+C
+
+e_vec <- eigen(C)$vectors
+e_vec
+e_val <- eigen(C)$values
+e_val_mat <- e_val * diag(2)
+
+ev <- as.data.frame(e_vec)
+row.names(ev) <- c("SAT","income")
+ev
+
+par(mfrow = c(1,3))
+
+plot.new()
+plot(ev, pch = 19, col = as.factor(row.names(ev)), 
+     xaxt ="n", ylim = c(-.7,.7), main = "Loadings")
+axis1 = axis(1,at = seq(0.705,0.708, by=0.001))
+abline(h = 0, col = "firebrick")
+with(ev,text(V2 ~ V1, labels = as.factor(rownames(ev)), pos=2))
+
+par(mfrow = c(1,1))
+
+scores <- (as.matrix(dat))%*%e_vec
+
+# Compare to 
+
+prcomp(dat)$sd^2
+prcomp(dat)$rotation
+head(prcomp(dat)$x)
+
+
+princomp(dat)$sdev^2
+princomp(dat)$loadings
+head(princomp(dat)$scores)
+
+colnames(scores) <- c("PC1","PC2")
+
+head(scores)
+
+
+plot(income ~ SAT, col=as.factor(rownames(dat)),
+     pch= 19, xlim = c(-2.5,2.5), ylim=c(-2.5,2.5),
+     data = dat)
+
+abline(v=0,h=0, col = "dark gray")
+abline(lm(income~SAT,dat), col = 'firebrick')
+
+text(x=dat$SAT, y=dat$income, rownames(dat), pos=3, cex = 0.5)
+
+
+arrows(x0 = 0, y0 = 0, x1 = e_val[1] * e_vec[1,1], 
+       y1 = e_val[1] * e_vec[2,1], col="red", lwd=2)
+
+arrows(x0 = 0, y0 = 0, x1 = e_val[2] * e_vec[1,2], 
+       y1 = e_val[2] * e_vec[2,2], col="blue", lwd=2)
+
+scores <- as.data.frame(scores)
+plot(PC2 ~ PC1, col=as.factor(rownames(dat)),
+     pch= 19, xlim = c(-2.5,2.5), ylim=c(-2.5,2.5),
+     data = scores)
+
+abline(v=0,h=0, col = c("red","blue"))
+
+
+text(x=scores$PC1, y=scores$PC2, rownames(scores), pos=3,cex=0.5) 
+
+
+
+## SECOND SIMULATION:
+
+
+## What if the income is closely correlated with SAT...
+
+income <- SAT * 100 + rnorm(1, 25e3, 1e4)
+
+dat <- cbind(SAT, income)
+
+row.names(dat) <- names
+dat <- scale(dat, scale = T, center = T)
+dat <- as.data.frame(dat)
+C <- cov(dat)
+C
+
+e_vec <- eigen(C)$vectors
+e_vec
+e_val <- eigen(C)$values
+e_val_mat <- e_val * diag(2)
+
+ev <- as.data.frame(e_vec)
+row.names(ev) <- c("SAT","income")
+ev
+
+par(mfrow = c(1,3))
+
+plot.new()
+plot(ev, pch = 19, col = as.factor(row.names(ev)), 
+     xaxt ="n", ylim = c(-.7,.7), main = "Loadings")
+axis1 = axis(1,at = seq(0.705,0.708, by=0.001))
+abline(h = 0, col = "firebrick")
+with(ev,text(V2 ~ V1, labels = as.factor(rownames(ev)), pos=2))
+
+par(mfrow = c(1,1))
+
+scores <- (as.matrix(dat))%*%e_vec
+
+# Compare to 
+
+prcomp(dat)$sd^2
+prcomp(dat)$rotation
+head(prcomp(dat)$x)
+
+
+princomp(dat)$sdev^2
+princomp(dat)$loadings
+head(princomp(dat)$scores)
+
+colnames(scores) <- c("PC1","PC2")
+
+head(scores)
+
+
+plot(income ~ SAT, col=as.factor(rownames(dat)),
+     pch= 19, xlim = c(-2.5,2.5), ylim=c(-2.5,2.5),
+     data = dat)
+
+abline(v=0,h=0, col = "dark gray")
+abline(lm(income~SAT,dat), col = 'firebrick')
+
+text(x=dat$SAT, y=dat$income, rownames(dat), pos=3, cex = 0.5)
+
+
+arrows(x0 = 0, y0 = 0, x1 = e_val[1] * e_vec[1,1], 
+       y1 = e_val[1] * e_vec[2,1], col="red", lwd=2)
+
+arrows(x0 = 0, y0 = 0, x1 = e_val[2] * e_vec[1,2], 
+       y1 = e_val[2] * e_vec[2,2], col="blue", lwd=2)
+
+scores <- as.data.frame(scores)
+plot(PC2 ~ PC1, col=as.factor(rownames(dat)),
+     pch= 19, xlim = c(-2.5,2.5), ylim=c(-2.5,2.5),
+     data = scores)
+
+abline(v=0,h=0, col = c("red","blue"))
+
+
+text(x=scores$PC1, y=scores$PC2, rownames(scores), pos=3,cex=0.5) 
+
+## One eigenvector explains all the variability.
+
+
+
+
+## THIRD SIMULATION:
+
+# Completely random:
+
+income <- rnorm(18, 250e3, 75e3)
+
+dat <- cbind(SAT, income)
+
+row.names(dat) <- names
+dat <- scale(dat, scale = T, center = T)
+dat <- as.data.frame(dat)
+C <- cov(dat)
+C
+
+e_vec <- eigen(C)$vectors
+e_vec
+e_val <- eigen(C)$values
+e_val_mat <- e_val * diag(2)
+
+ev <- as.data.frame(e_vec)
+row.names(ev) <- c("SAT","income")
+ev
+
+par(mfrow = c(1,3))
+
+plot.new()
+plot(ev, pch = 19, col = as.factor(row.names(ev)), 
+     xaxt ="n", ylim = c(-.7,.7), main = "Loadings")
+axis1 = axis(1,at = seq(0.705,0.708, by=0.001))
+abline(h = 0, col = "firebrick")
+with(ev,text(V2 ~ V1, labels = as.factor(rownames(ev)), pos=2))
+
+par(mfrow = c(1,1))
+
+scores <- (as.matrix(dat))%*%e_vec
+
+# Compare to 
+
+prcomp(dat)$sd^2
+prcomp(dat)$rotation
+head(prcomp(dat)$x)
+
+
+princomp(dat)$sdev^2
+princomp(dat)$loadings
+head(princomp(dat)$scores)
+
+colnames(scores) <- c("PC1","PC2")
+
+head(scores)
+
+
+plot(income ~ SAT, col=as.factor(rownames(dat)),
+     pch= 19, xlim = c(-2.5,2.5), ylim=c(-2.5,2.5),
+     data = dat)
+
+abline(v=0,h=0, col = "dark gray")
+abline(lm(income~SAT,dat), col = 'firebrick')
+
+text(x=dat$SAT, y=dat$income, rownames(dat), pos=3, cex = 0.5)
+
+
+arrows(x0 = 0, y0 = 0, x1 = e_val[1] * e_vec[1,1], 
+       y1 = e_val[1] * e_vec[2,1], col="red", lwd=2)
+
+arrows(x0 = 0, y0 = 0, x1 = e_val[2] * e_vec[1,2], 
+       y1 = e_val[2] * e_vec[2,2], col="blue", lwd=2)
+
+scores <- as.data.frame(scores)
+plot(PC2 ~ PC1, col=as.factor(rownames(dat)),
+     pch= 19, xlim = c(-2.5,2.5), ylim=c(-2.5,2.5),
+     data = scores)
+
+abline(v=0,h=0, col = c("red","blue"))
+
+
+text(x=scores$PC1, y=scores$PC2, rownames(scores), pos=3,cex=0.5) 
