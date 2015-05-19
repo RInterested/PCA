@@ -1,0 +1,304 @@
+#Goes with PCA_example.csv file in Google Drive
+
+library(gsheet)
+data <- read.csv(text = 
+  gsheet2text('https://docs.google.com/spreadsheets/d/1X9ccexhCU2xNI99MDj6WWRdOza1J_IbTSI-yuPDsxOE/edit?usp=sharing',
+  format ='csv'))
+head(dat)
+colnames(dat)[7] <- "lattice"
+colnames(dat)[2] <- "atomic.no"
+dat1 <- subset(dat[1:15,1:3])
+row.names(dat1) <- dat1$compounds
+dat1 <- dat1[,-1]
+head(dat1)
+
+
+#LINEAR ALGEBRA:
+
+
+scaled_dat <- as.data.frame(scale(dat1,center=T)) 
+head(scaled_dat)
+X <- as.matrix(scaled_dat) 
+
+C <- cov(X) # Covariance matrix
+C
+
+lambda <- eigen(C)$values # Eigenvalues
+lambda_matrix <- diag(2)*eigen(C)$values # Eigenvalues matrix
+lambda_matrix
+
+
+e_vectors <- eigen(C)$vectors # Eigenvectors matrix (2 x 2)
+e_vectors
+
+# To make it congruous with built-in formulas, we should probably
+# change the sign of the first eigenvector from [-.7,-.7] to [.7, .7]:
+
+e_vectors[,1] <- e_vectors[,1]*-1
+e_vectors
+colnames(e_vectors) <- c("PC1","PC2")
+
+# Graphic representation of the loadings - it shows which parameters 
+# (i.e. variables) move together or separately
+# with different eigenvectors. Let's see the effect on variables of the loadings on 
+# PC1 and PC2:
+
+ev <- as.data.frame(e_vectors)
+row.names(ev) <- c("atomic.no","melting.point")
+ev
+
+par(mfrow = c(1,3))
+
+plot.new()
+plot(ev, pch = 19, col = as.factor(row.names(ev)), 
+     xaxt ="n", ylim = c(-.7,.7), main = "Loadings")
+axis1 = axis(1,at = seq(0.705,0.708, by=0.001))
+abline(h = 0, col = "firebrick")
+with(ev,text(PC2 ~ PC1, labels = as.factor(rownames(ev)), pos=2, cex=1.5))
+
+
+score_matrix <-  X %*% e_vectors # Score matrix = (15 x 2) %*% (2 x 2) = (15 x 2)
+# Same as
+head(t(t(e_vectors) %*% t(X)))
+colnames(score_matrix) <-c("PC1","PC2")
+head(score_matrix)
+
+
+# Compare to... R Packages:
+# For scores:
+
+auto <- prcomp(dat1, center = T, scale = T)
+# or auto <- prcomp(scaled_dat)
+head(auto$x)
+
+#or
+
+auto2 <- princomp(scaled_dat)
+head(auto2$scores)
+
+# and for eigenvectors:
+
+e_vectors
+auto$rotation
+auto2$loadings
+
+# and for eigenvalues:
+
+lambda
+auto$sdev^2
+princomp(covmat=C)$sd^2
+
+
+
+
+
+#END OF LINEAR ALGEBRA
+
+
+
+#relative influence of eigenvalues, for instance PC1:
+
+eigen(C)$values[1]/sum(eigen(C)$values) * 100
+
+
+par(mfrow=c(1,2))
+
+#FIRST PLOT:
+
+
+plot(melting.point ~ atomic.no, col = as.factor(rownames(scaled_dat)), 
+     main="Distance to First EigenV", pch = 19, 
+     xlim=c(-2.2, 2.2), ylim = c(-2.2,2.2), data = scaled_dat)
+abline(v=0,h=0, col = "dark gray")
+
+#Overlap pertinent evectors
+
+
+abline(0, e_vectors[2,1]/e_vectors[1,1],col='red')
+abline(0, e_vectors[1,2]/e_vectors[2,2],col='purple')
+
+arrows(x0 = 0, y0 = 0, x1 = lambda[1]*e_vectors[1,1], 
+       y1 = lambda[1]*e_vectors[2,1],col="red",lwd=2)
+arrows(x0 = 0, y0 = 0, x1 = lambda[2]*e_vectors[1,2], 
+       y1 = lambda[2]*e_vectors[2,2],col="blue", lwd=2)
+
+#Plot the lines from first evector to points
+
+line1 <- c(0, e_vectors[2,1]/e_vectors[1,1])
+
+perp.segment.coord <- function(x0, y0, line1){
+  
+  #finds endpoint for a perpendicular segment from the point (x0,y0) to the line1
+  
+  a <- line1[1]  #intercept
+  b <- line1[2]  #slope
+  
+  x1 <- (x0 + b * y0 - a * b)/(1 + b^2)
+  y1 <- a + b * x1
+  list(x0 = x0, y0 = y0, x1 = x1, y1 = y1)
+}
+
+ss <- perp.segment.coord(scaled_dat$atomic.no, scaled_dat$melting.point, line1)
+# do.call(segments, ss)
+# which is the same as:
+segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, col='red')
+
+points(melting.point ~ atomic.no, col = as.factor(rownames(scaled_dat)), pch = 19, data = scaled_dat)
+with(scaled_dat,text(melting.point ~ atomic.no, labels = as.factor(rownames(scaled_dat)),
+                     pos=1, cex=1.4))
+
+
+
+#SECOND PLOT:
+
+plot(melting.point ~ atomic.no, col = as.factor(rownames(scaled_dat)), pch = 19, 
+     main="Distance to 2nd EigenV",
+     xlim=c(-2.2, 2.2), ylim = c(-2.2,2.2), data = scaled_dat)
+
+abline(v = 0,h = 0, col = "dark gray")
+
+#Overlap pertinent evectors
+
+
+
+abline(0, e_vectors[2,1]/e_vectors[1,1],col='red')
+abline(0, e_vectors[1,2]/e_vectors[2,2],col='purple')
+
+arrows(x0 = 0, y0 = 0, x1 = lambda[1] * e_vectors[1,1], 
+       y1 = lambda[1] * e_vectors[2,1],col="red",lwd=2)
+arrows(x0 = 0, y0 = 0, x1 = lambda[2] * e_vectors[1,2], 
+       y1 = lambda[2]*e_vectors[2,2],col="blue", lwd=2)
+
+
+line1a <- c(0, e_vectors[2,2]/e_vectors[1,2])
+
+ssa <- perp.segment.coord(scaled_dat$atomic.no, scaled_dat$melting.point, line1a)
+# do.call(segments, ss)
+# which is the same as:
+segments(x0 = ssa$x0, x1 = ssa$x1, y0 = ssa$y0, y1 = ssa$y1, col='purple')
+
+
+points(melting.point ~ atomic.no, col = as.factor(rownames(scaled_dat)), pch = 19, data = scaled_dat)
+
+with(scaled_dat,text(melting.point ~ atomic.no, labels = as.factor(rownames(scaled_dat)),
+                     pos=1, cex=1.4))
+
+
+
+#THIRD PLOT:
+
+
+#Now compare side-by-side with plotted first and second column Scores
+
+score <- as.data.frame(score_matrix)
+
+plot(PC2 ~ PC1, col = as.factor(rownames(score)), pch = 19, 
+     main='Plot of Scores with xy Axis = Eigen Vectors',
+     xlim=c(-2.2, 2.2), ylim = c(-2.2,2.2), xlab='PC1', ylab='PC2',data=score)
+
+abline(h = 0, col = 'red')
+abline(v = 0, col='purple')
+
+
+perp.segment.horiz <- function(x0, y0){
+  
+  #finds endpoint for a perpendicular segment from the point (x0,y0) to the horizontal
+  x1 <- x0
+  y1 <- 0
+  list(x0 = x0, y0 = y0, x1 = x1, y1 = y1)
+}
+
+ss1 <- perp.segment.horiz(score[,1], score[,2])
+
+segments(x0 = ss1$x0, x1 = ss1$x1, y0 = ss1$y0, y1 = ss1$y1, col='red')
+
+
+points(PC2 ~ PC1, col=as.factor(rownames(score)), pch = 19, xlab='V1', ylab='V2',data=score)
+with(score,text(PC2 ~ PC1, labels=as.factor(rownames(score)), pos = 3, cex=1.4))
+
+
+
+#FOURTH PLOT:
+
+
+plot(PC2 ~ PC1, col=as.factor(rownames(score)), 
+     main='Plot of Scores with xy Axis = Eigen Vectors',
+     pch = 19, xlim=c(-2.2, 2.2), ylim = c(-2.2,2.2),
+     xlab='PC1', ylab='PC2',data=score)
+
+abline(h = 0, col = 'red')
+abline(v = 0, col ='purple')
+
+
+perp.segment.vert <- function(x0, y0){
+  
+  #finds endpoint for a perpendicular segment from the point (x0,y0) to the horizontal
+  x1 <- 0
+  y1 <- y0
+  
+  list(x0 = x0, y0 = y0, x1 = x1, y1 = y1)
+}
+
+ss1a <- perp.segment.vert(score[,1], score[,2])
+segments(x0 = ss1a$x0, x1 = ss1a$x1, y0 = ss1a$y0, y1 = ss1a$y1, col='purple')
+
+
+points(PC2 ~ PC1, col=as.factor(rownames(score)), pch = 19, xlab='V1', ylab='V2',data=score)
+
+with(score,text(PC2 ~ PC1, labels=as.factor(rownames(score)), pos = 3, cex=1.4))
+
+
+
+##SECOND PART RESTORING THE DATA:
+
+
+
+dat2 <- score
+head(dat2)
+X1 <- as.matrix(dat2) 
+head(X1)
+
+
+par(mfrow=c(1,2))
+
+# PLOT 5: SCORES
+
+
+plot(PC2 ~ PC1, col = as.factor(rownames(dat2)), 
+     pch = 19, xlim=c(-2.5, 2.2), ylim = c(-2.2,2.2),
+     main="Score Matrix Values", data = dat2)
+
+abline(v = 0,h = 0, col = c("red","purple"))
+
+
+points(PC2 ~ PC1, col = as.factor(rownames(dat2)), xlim=c(-2.8,2.8),ylim=c(-2.8,2.8),pch = 19,data = dat2)
+
+with(dat2,text(PC2 ~ PC1, labels=as.factor(rownames(dat2)), pos=2, cex=1.4))
+
+
+
+
+# PLOT 6: ROTATING BACK...
+
+rot <- X1 %*% solve(e_vectors)
+
+rot1 <- as.data.frame(rot)
+colnames(rot1) <- c("atomic.no","melting.point")
+
+plot(melting.point ~ atomic.no, col = as.factor(rownames(rot1)), xlim=c(-2.2, 2.2), ylim = c(-2.2,2.2),
+     pch = 19,main="Data De-Rotation",data = rot1)
+
+abline(v = 0, h = 0, col = "dark gray")
+
+
+abline(0, e_vectors[2,1]/e_vectors[1,1],col='red')
+abline(0, e_vectors[1,2]/e_vectors[2,2],col='purple')
+
+arrows(x0 = 0, y0 = 0, x1 = lambda[1]*e_vectors[1,1], 
+       y1 = lambda[1]*e_vectors[2,1], lwd = 2, col="red")
+arrows(x0 = 0, y0 = 0, x1 = lambda[2]*e_vectors[1,2], 
+       y1 = lambda[2]*e_vectors[2,2], lwd = 2, col="blue")
+
+points(melting.point ~ atomic.no, col = as.factor(rownames(rot1)), xlim=c(-2.8,2.8),ylim=c(-2.8,2.8),
+       pch = 19,main="Data Rotation",data = rot1)
+with(rot1,text(melting.point ~ atomic.no, labels=as.factor(rownames(rot1)), pos=3, cex=1.4))
