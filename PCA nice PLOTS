@@ -1,0 +1,42 @@
+# From http://www.r-bloggers.com/a-quicky/
+# Generates sample matrix of five discrete clusters that have
+# very different mean and standard deviation values.
+z1 <- rnorm(1000, mean=1, sd=1);
+z2 <- rnorm(1000, mean=3, sd=3);
+z3 <- rnorm(1000, mean=5, sd=5);
+z4 <- rnorm(1000, mean=7, sd=7);
+z5 <- rnorm(1000, mean=9, sd=9);
+mydata <- matrix(c(z1, z2, z3, z4, z5), 250, 20, byrow=T,
+                 dimnames=list(paste("R", 1:250, sep=""), paste("C", 1:20, sep="")))
+# Performs principal component analysis after scaling the data.
+# It returns a list with class "prcomp" that contains five components:
+#   (1) the standard deviations (sdev) of the principal components,
+#   (2) the matrix of eigenvectors (rotation),
+#   (3) the principal component data (x),
+#   (4) the centering (center) and
+#   (5) scaling (scale) used.
+pca <- prcomp(mydata, scale=T)
+# Prints variance summary for all principal components.
+summary(pca)
+par(mfrow=c(1,2))
+# Define plotting colors.
+mycolors <- c("red", "green", "blue", "magenta", "black")
+# Plots scatter plot for the first two principal components
+# that are stored in pca$x[,1:2].
+plot(pca$x, pch=20, col=mycolors[sort(rep(1:5, 50))])
+# Same as above, but prints labels.
+plot(pca$x, type="n"); text(pca$x, rownames(pca$x), cex=0.8,
+                            col=mycolors[sort(rep(1:5, 50))])
+# Plots scatter plots for all combinations between the first four principal components.
+pairs(pca$x[,1:4], pch=20, col=mycolors[sort(rep(1:5, 50))])
+
+# Plots a scatter plot for the first two principal components
+# plus the corresponding eigen vectors that are stored in pca$rotation.
+biplot(pca)
+
+# Loads library scatterplot3d.
+library(scatterplot3d)
+# Same as above, but plots the first three principal components in 3D scatter plot
+scatterplot3d(pca$x[,1:3], pch=20, color=mycolors[sort(rep(1:5, 50))])
+# Importance of components:
+summary(pca)
