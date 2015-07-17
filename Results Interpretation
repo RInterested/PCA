@@ -3,7 +3,14 @@
 # Getting data:
 
 library(gsheet)
-cars04 <- data <- read.csv(text = gsheet2text('https://docs.google.com/spreadsheets/d/1HgCxh_igGTzNcV4CBCiUB5T5nNUdvdqLCcQiKGJSYic/edit?usp=sharing', format ='csv'))
+cars04 <- data <- read.csv(text = gsheet2text('https://docs.google.com/spreadsheets/d/1HgCxh_igGTzNcV4CBCiUB5T5nNUdvdqLCcQiKGJSYic/edit?usp=sharing', 
+                                              ,format ='csv'))
+
+# There is problem with the first column not being identified as the row names:
+dat <- cars04[,-1]
+rownames(dat) <- cars04[,1]
+cars04 <- dat
+cars04 <- na.omit(cars04)
 head(cars04)
 
 # Only 11 columns are numerical (as opposed to the first binary variables) and suitable for PCA:
