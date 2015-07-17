@@ -302,3 +302,24 @@ arrows(x0 = 0, y0 = 0, x1 = lambda[2]*e_vectors[1,2],
 points(melting.point ~ atomic.no, col = as.factor(rownames(rot1)), xlim=c(-2.8,2.8),ylim=c(-2.8,2.8),
        pch = 19,main="Data Rotation",data = rot1)
 with(rot1,text(melting.point ~ atomic.no, labels=as.factor(rownames(rot1)), pos=3, cex=1.4))
+
+# RESULTS INTERPRETATION:
+
+par(mfrow=c(1,2))
+
+
+plot(PC2 ~ PC1, col = as.factor(rownames(score)), pch = 19, 
+     main='Plot of Scores with xy Axis = Eigen Vectors',
+     xlim=c(-2.2, 2.2), ylim = c(-2.2,2.2), xlab='PC1', ylab='PC2',data=score)
+
+abline(h = 0, col = 'red')
+abline(v = 0, col='purple')
+points(PC2 ~ PC1, col=as.factor(rownames(score)), pch = 19, xlab='V1', ylab='V2',data=score)
+with(score,text(PC2 ~ PC1, labels=as.factor(rownames(score)), pos = 3, cex=1.4))
+
+
+
+PCA <- prcomp(dat1, center = T, scale = T)
+PCA
+PCA$rotation
+biplot(PCA)
