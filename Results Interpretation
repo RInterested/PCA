@@ -1,0 +1,19 @@
+## Source: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=11&cad=rja&uact=8&ved=0CB0QFjAAOApqFQoTCLShjOX34MYCFcZ3HgodmJoBlA&url=http%3A%2F%2Fwww.stat.cmu.edu%2F~cshalizi%2F350%2Flectures%2F10%2Flecture-10.pdf&ei=3U-oVfS-FMbveZi1hqAJ&usg=AFQjCNHZ5DejT257j18zm8kMb6C4w9-2fw&sig2=zVMQE2EHzNWwhY2YbEoeyA
+
+# Getting data:
+
+library(gsheet)
+cars04 <- data <- read.csv(text = gsheet2text('https://drive.google.com/open?id=0Bwl-HpVJ_5PeTl92cjYtTEhRcWc', format ='csv'))
+head(cars04)
+
+# Only 11 columns are numerical (as opposed to the first binary variables) and suitable for PCA:
+
+cars04.pca = prcomp(cars04[,8:18], scale.=TRUE)
+
+# Getting eigenvectors:
+round(cars04.pca$rotation[,1:2],2)
+
+# Plotting:
+require(stats)
+require(graphics)
+biplot(cars04.pca, scale=1, pc.biplot=F)
