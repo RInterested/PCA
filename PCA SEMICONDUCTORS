@@ -48,7 +48,7 @@ row.names(ev) <- c("atomic.no","melting.point")
 ev
 
 plot.new()
-plot(ev, pch = 19, col = c("red","cyan"), cex = 2, cex.lab = 1.2, 
+plot(ev, pch = 15, col = c("red","cyan"), cex = 2, cex.lab = 1.2, 
      col.lab = "orange4", xaxt ="n", yaxt ="n", 
      ylim = c(-.9,.9), main = "e-VECTORS effects on VARIABLES")
 axis1 = axis(1, at = 0.7071)
