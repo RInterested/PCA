@@ -47,17 +47,15 @@ ev <- as.data.frame(e_vectors)
 row.names(ev) <- c("atomic.no","melting.point")
 ev
 
-par(mfrow = c(1,3))
-
 plot.new()
-plot(ev, pch = 20, col = c(3,4), cex = 2, cex.lab = 1.2, 
-     col.lab = "red", xaxt ="n", yaxt ="n", 
+plot(ev, pch = 19, col = c("red","cyan"), cex = 2, cex.lab = 1.2, 
+     col.lab = "orange4", xaxt ="n", yaxt ="n", 
      ylim = c(-.9,.9), main = "e-VECTORS effects on VARIABLES")
 axis1 = axis(1, at = 0.7071)
 axis2 = axis(2, at = c(-0.7071, 0.7071))
 abline(h = 0, col = "firebrick")
 with(ev, text(PC2 ~ PC1, labels = as.factor(rownames(ev)), 
-             pos = 1, cex = 1.2))
+              pos = 1, cex = 1.2))
 
 
 score_matrix <-  X %*% e_vectors # Score matrix = (15 x 2) %*% (2 x 2) = (15 x 2)
