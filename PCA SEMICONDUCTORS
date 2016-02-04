@@ -64,10 +64,11 @@ plot(ev, main = "eVec's or loadings ", xlab=NA, ylab=NA,
 abline(h=0)
 arrows(x0 = 0.02, y0 = 0.02, x1 = 0.7, y1 = 0.7, lwd = 5, col="purple")
 arrows(x0 = 0.02, y0 = -0.02, x1 = 0.7, y1 = -0.7, lwd = 5, col="orange")
-legend(x = 0, y = 0.3, "PC1", bty = "n",
+legend(x = 0, y = 0.20, "PC1", bty = "n",
        text.col = "purple", cex = 1.9)
-legend(x = 0, y = 0, "PC2", bty = "n",
+legend(x = 0, y = 0.03, "PC2", bty = "n",
        text.col = "orange", cex = 1.9)
+
 
 
 
