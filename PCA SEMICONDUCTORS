@@ -129,13 +129,13 @@ abline(v=0,h=0, col = "dark gray")
 #Overlap pertinent evectors
 
 
-abline(0, e_vectors[2,1]/e_vectors[1,1],col='red')
-abline(0, e_vectors[1,2]/e_vectors[2,2],col='purple')
+abline(0, e_vectors[2,1]/e_vectors[1,1],col='purple')
+abline(0, e_vectors[1,2]/e_vectors[2,2],col='orange')
 
 arrows(x0 = 0, y0 = 0, x1 = lambda[1]*e_vectors[1,1], 
-       y1 = lambda[1]*e_vectors[2,1],col="red",lwd=2)
+       y1 = lambda[1]*e_vectors[2,1],col="purple",lwd=2)
 arrows(x0 = 0, y0 = 0, x1 = lambda[2]*e_vectors[1,2], 
-       y1 = lambda[2]*e_vectors[2,2],col="blue", lwd=2)
+       y1 = lambda[2]*e_vectors[2,2],col="orange", lwd=2)
 
 #Plot the lines from first evector to points
 
@@ -156,7 +156,7 @@ perp.segment.coord <- function(x0, y0, line1){
 ss <- perp.segment.coord(scaled_dat$atomic.no, scaled_dat$melting.point, line1)
 # do.call(segments, ss)
 # which is the same as:
-segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, col='red')
+segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, col='purple')
 
 points(melting.point ~ atomic.no, col = as.factor(rownames(scaled_dat)), pch = 19, data = scaled_dat)
 with(scaled_dat,text(melting.point ~ atomic.no, labels = as.factor(rownames(scaled_dat)),
@@ -176,13 +176,13 @@ abline(v = 0,h = 0, col = "dark gray")
 
 
 
-abline(0, e_vectors[2,1]/e_vectors[1,1],col='red')
-abline(0, e_vectors[1,2]/e_vectors[2,2],col='purple')
+abline(0, e_vectors[2,1]/e_vectors[1,1],col='purple')
+abline(0, e_vectors[1,2]/e_vectors[2,2],col='orange')
 
 arrows(x0 = 0, y0 = 0, x1 = lambda[1] * e_vectors[1,1], 
-       y1 = lambda[1] * e_vectors[2,1],col="red",lwd=2)
+       y1 = lambda[1] * e_vectors[2,1],col="purple",lwd=2)
 arrows(x0 = 0, y0 = 0, x1 = lambda[2] * e_vectors[1,2], 
-       y1 = lambda[2]*e_vectors[2,2],col="blue", lwd=2)
+       y1 = lambda[2]*e_vectors[2,2],col="orange", lwd=2)
 
 
 line1a <- c(0, e_vectors[2,2]/e_vectors[1,2])
@@ -190,7 +190,7 @@ line1a <- c(0, e_vectors[2,2]/e_vectors[1,2])
 ssa <- perp.segment.coord(scaled_dat$atomic.no, scaled_dat$melting.point, line1a)
 # do.call(segments, ss)
 # which is the same as:
-segments(x0 = ssa$x0, x1 = ssa$x1, y0 = ssa$y0, y1 = ssa$y1, col='purple')
+segments(x0 = ssa$x0, x1 = ssa$x1, y0 = ssa$y0, y1 = ssa$y1, col='orange')
 
 
 points(melting.point ~ atomic.no, col = as.factor(rownames(scaled_dat)), pch = 19, data = scaled_dat)
@@ -211,8 +211,8 @@ plot(PC2 ~ PC1, col = as.factor(rownames(score)), pch = 19,
      main='Plot of Scores with xy Axis = Eigen Vectors',
      xlim=c(-2.2, 2.2), ylim = c(-2.2,2.2), xlab='PC1', ylab='PC2',data=score)
 
-abline(h = 0, col = 'red')
-abline(v = 0, col='purple')
+abline(h = 0, col = 'purple')
+abline(v = 0, col='orange')
 
 
 perp.segment.horiz <- function(x0, y0){
@@ -225,7 +225,7 @@ perp.segment.horiz <- function(x0, y0){
 
 ss1 <- perp.segment.horiz(score[,1], score[,2])
 
-segments(x0 = ss1$x0, x1 = ss1$x1, y0 = ss1$y0, y1 = ss1$y1, col='red')
+segments(x0 = ss1$x0, x1 = ss1$x1, y0 = ss1$y0, y1 = ss1$y1, col='purple')
 
 
 points(PC2 ~ PC1, col=as.factor(rownames(score)), pch = 19, xlab='V1', ylab='V2',data=score)
@@ -241,8 +241,8 @@ plot(PC2 ~ PC1, col=as.factor(rownames(score)),
      pch = 19, xlim=c(-2.2, 2.2), ylim = c(-2.2,2.2),
      xlab='PC1', ylab='PC2',data=score)
 
-abline(h = 0, col = 'red')
-abline(v = 0, col ='purple')
+abline(h = 0, col = 'purple')
+abline(v = 0, col ='orange')
 
 
 perp.segment.vert <- function(x0, y0){
@@ -255,7 +255,7 @@ perp.segment.vert <- function(x0, y0){
 }
 
 ss1a <- perp.segment.vert(score[,1], score[,2])
-segments(x0 = ss1a$x0, x1 = ss1a$x1, y0 = ss1a$y0, y1 = ss1a$y1, col='purple')
+segments(x0 = ss1a$x0, x1 = ss1a$x1, y0 = ss1a$y0, y1 = ss1a$y1, col='orange')
 
 
 points(PC2 ~ PC1, col=as.factor(rownames(score)), pch = 19, xlab='V1', ylab='V2',data=score)
@@ -283,7 +283,7 @@ plot(PC2 ~ PC1, col = as.factor(rownames(dat2)),
      pch = 19, xlim=c(-2.5, 2.2), ylim = c(-2.2,2.2),
      main="Score Matrix Values", data = dat2)
 
-abline(v = 0,h = 0, col = c("red","purple"))
+abline(v = 0,h = 0, col = c("purple","orange"))
 
 
 points(PC2 ~ PC1, col = as.factor(rownames(dat2)), xlim=c(-2.8,2.8),ylim=c(-2.8,2.8),pch = 19,data = dat2)
@@ -306,13 +306,13 @@ plot(melting.point ~ atomic.no, col = as.factor(rownames(rot1)), xlim=c(-2.2, 2.
 abline(v = 0, h = 0, col = "dark gray")
 
 
-abline(0, e_vectors[2,1]/e_vectors[1,1],col='red')
-abline(0, e_vectors[1,2]/e_vectors[2,2],col='purple')
+abline(0, e_vectors[2,1]/e_vectors[1,1],col='purple')
+abline(0, e_vectors[1,2]/e_vectors[2,2],col='orange')
 
 arrows(x0 = 0, y0 = 0, x1 = lambda[1]*e_vectors[1,1], 
-       y1 = lambda[1]*e_vectors[2,1], lwd = 2, col="red")
+       y1 = lambda[1]*e_vectors[2,1], lwd = 2, col="purple")
 arrows(x0 = 0, y0 = 0, x1 = lambda[2]*e_vectors[1,2], 
-       y1 = lambda[2]*e_vectors[2,2], lwd = 2, col="blue")
+       y1 = lambda[2]*e_vectors[2,2], lwd = 2, col="orange")
 
 points(melting.point ~ atomic.no, col = as.factor(rownames(rot1)), xlim=c(-2.8,2.8),ylim=c(-2.8,2.8),
        pch = 19,main="Data Rotation",data = rot1)
@@ -327,8 +327,8 @@ plot(PC2 ~ PC1, col = as.factor(rownames(score)), pch = 19,
      main='Plot of Scores with xy Axis = Eigen Vectors',
      xlim=c(-2.2, 2.2), ylim = c(-2.2,2.2), xlab='PC1', ylab='PC2',data=score)
 
-abline(h = 0, col = 'red')
-abline(v = 0, col='purple')
+abline(h = 0, col = 'purple')
+abline(v = 0, col='orange')
 points(PC2 ~ PC1, col=as.factor(rownames(score)), pch = 19, xlab='V1', ylab='V2',data=score)
 with(score,text(PC2 ~ PC1, labels=as.factor(rownames(score)), pos = 3, cex=1.4))
 
@@ -338,3 +338,8 @@ PCA <- prcomp(dat1, center = T, scale = T)
 PCA
 PCA$rotation
 biplot(PCA)
+
+#Scree plot:
+
+screeplot(PCA, npcs = 2, ylim=c(0,1.5), border = "gray", col="gray90", main="Scree Plot", cex.main=2)
+text(x=c(0.7,1.9),y=c(0.1,0.1),c("PC1","PC2"), col=c("purple","orange"), cex=2)
