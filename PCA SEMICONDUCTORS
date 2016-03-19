@@ -52,22 +52,22 @@ par(mfrow=c(1,2))
 
 plot(ev, pch = 15, col = c("red","cyan"), cex = 2, cex.lab = 1.2, 
      col.lab = "orange4", xaxt ="n", yaxt ="n", 
-     ylim = c(-.9,.9), main = "e-VECTORS effects on VARIABLES")
+     ylim = c(-.9,.9), main = "e-vec's on var's")
 axis1 = axis(1, at = 0.7071)
 axis2 = axis(2, at = c(-0.7071, 0.7071))
 abline(h = 0, col = "firebrick")
 with(ev, text(PC2 ~ PC1, labels = as.factor(rownames(ev)), 
-              pos = 1, cex = 1.2))
+              pos = 1))
 
-plot(ev, main = "eVec's or loadings ", xlab=NA, ylab=NA,
+plot(ev, main = "eVec's = loadings ", xlab=NA, ylab=NA,
      xlim= c(0,0.8), ylim=c(-.8,.8), type ="n")
 abline(h=0)
 arrows(x0 = 0.02, y0 = 0.02, x1 = 0.7, y1 = 0.7, lwd = 5, col="purple")
 arrows(x0 = 0.02, y0 = -0.02, x1 = 0.7, y1 = -0.7, lwd = 5, col="orange")
 legend(x = 0, y = 0.20, "PC1", bty = "n",
-       text.col = "purple", cex = 1.9)
+       text.col = "purple", )
 legend(x = 0, y = 0.03, "PC2", bty = "n",
-       text.col = "orange", cex = 1.9)
+       text.col = "orange")
 
 
 
@@ -104,7 +104,12 @@ auto$sdev^2
 princomp(covmat=C)$sd^2
 
 
+# We can use svd: http://www.ime.usp.br/~pavan/pdf/MAE0330-PCA-R-2013
 
+svd_scaled_dat <-svd(scale(dat1))
+eigen_vectors <- svd_scaled_dat$v
+eigen_values <- (svd_scaled_dat$d/sqrt(nrow(dat1) - 1))^2
+scores<-scale(dat1) %*% eigen_vectors
 
 
 #END OF LINEAR ALGEBRA
