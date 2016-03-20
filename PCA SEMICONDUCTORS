@@ -1,9 +1,7 @@
 #Goes with PCA_example.csv file in Google Drive
 
 library(gsheet)
-dat <- read.csv(text = 
-  gsheet2text('https://docs.google.com/spreadsheets/d/1X9ccexhCU2xNI99MDj6WWRdOza1J_IbTSI-yuPDsxOE/edit?usp=sharing',
-  format ='csv'))
+dat <- read.csv(url("http://rinterested.github.io/datasets/semiconductors"))
 head(dat)
 colnames(dat)[7] <- "lattice"
 colnames(dat)[2] <- "atomic.no"
