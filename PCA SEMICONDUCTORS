@@ -57,7 +57,7 @@ abline(h = 0, col = "firebrick")
 with(ev, text(PC2 ~ PC1, labels = as.factor(rownames(ev)), 
               pos = 1))
 
-plot(ev, main = "eVec's = loadings ", xlab=NA, ylab=NA,
+plot(ev, main = "eigenvecs", xlab=NA, ylab=NA,
      xlim= c(0,0.8), ylim=c(-.8,.8), type ="n")
 abline(h=0)
 arrows(x0 = 0.02, y0 = 0.02, x1 = 0.7, y1 = 0.7, lwd = 5, col="purple")
