@@ -227,7 +227,21 @@ with(scaled_dat,text(melting.point ~ atomic.no, labels = as.factor(rownames(scal
 legend(1,-1.5, legend=c("EigenV","OLS"), col=c("lightslateblue","red"), 
        cex=.8,lty=1, lwd=2, box.lty=0)
 
+# OLS looks for a minimization of squared residuals, which are going to be the hypothenuses of the perpendiculars
+# from the points to the OLS regression line, and hence result in a higher sum of squared residuals than the
+# sum of the squared perpendicular segments from the points to the OLS line:
 
+line2 <- c(0, mod$coef[2])
+ss2 <- perp.segment.coord(scaled_dat$atomic.no, scaled_dat$melting.point, line2)
+sum((ss2$x1 - ss2$x0)^2 + (ss2$y1 - ss2$y0)^2)
+# [1] 11.73847
+sum(residuals(mod)^2)
+# [1] 12.76988
+
+# So it makes no sense to compare to the sum of squared segments to the line formed by the main eigenvector:
+
+> sum((ss$x1 - ss$x0)^2 + (ss$y1 - ss$y0)^2)
+# [1] 9.850096
 
 
 #SECOND PLOT:
