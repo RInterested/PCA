@@ -167,6 +167,69 @@ with(scaled_dat,text(melting.point ~ atomic.no, labels = as.factor(rownames(scal
 
 
 
+#COMPARISON TO OLS:
+
+plot(melting.point ~ atomic.no, col = as.factor(rownames(scaled_dat)), 
+     main="Main EigenVec vs. OLS line", pch = 19, 
+     xlim=c(-2.2, 2.2), ylim = c(-2.2,2.2), cex.main=1, cex.lab=.5, cex.axis=.5,
+     data = scaled_dat)
+abline(h=0, v=0,col = "dark gray")
+
+#Overlap pertinent evectors
+
+
+abline(0, e_vectors[2,1]/e_vectors[1,1],col='lightslateblue',lwd=2)
+
+
+arrows(x0 = 0, y0 = 0, x1 = lambda[1]*e_vectors[1,1], 
+       y1 = lambda[1]*e_vectors[2,1],col="lightslateblue",lwd=7)
+
+
+#Plot the lines from first evector to points
+
+line1 <- c(0, e_vectors[2,1]/e_vectors[1,1])
+
+perp.segment.coord <- function(x0, y0, line1){
+  
+  #finds endpoint for a perpendicular segment from the point (x0,y0) to the line1
+  
+  a <- line1[1]  #intercept
+  b <- line1[2]  #slope
+  
+  x1 <- (x0 + b * y0 - a * b)/(1 + b^2)
+  y1 <- a + b * x1
+  list(x0 = x0, y0 = y0, x1 = x1, y1 = y1)
+}
+
+ss <- perp.segment.coord(scaled_dat$atomic.no, scaled_dat$melting.point, line1)
+# do.call(segments, ss)
+# which is the same as:
+segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, col='lightslateblue', lwd=2, lty=2)
+
+
+
+mod <- lm(melting.point ~ atomic.no, scaled_dat)
+mod$coef[2]
+cor(scaled_dat$melting.point, scaled_dat$atomic.no)
+
+abline(mod, col='red', lwd=3)
+
+res <- signif(residuals(mod), 5)
+pre <- predict(mod)
+y <- scaled_dat[,2]
+x <- scaled_dat[,1]
+segments(x, y, x, pre, col = 'red', lwd=2, lty=2)
+
+points(melting.point ~ atomic.no, col = as.factor(rownames(scaled_dat)), pch = 19, data = scaled_dat)
+with(scaled_dat,text(melting.point ~ atomic.no, labels = as.factor(rownames(scaled_dat)),
+                     pos=1, cex=.9))
+
+legend(1,-1.5, legend=c("EigenV","OLS"), col=c("lightslateblue","red"), 
+       cex=.8,lty=1, lwd=2, box.lty=0)
+
+
+
+
 #SECOND PLOT:
 
 plot(melting.point ~ atomic.no, col = as.factor(rownames(scaled_dat)), pch = 19, 
