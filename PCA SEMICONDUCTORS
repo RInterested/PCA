@@ -240,7 +240,7 @@ sum(residuals(mod)^2)
 
 # So it makes no sense to compare to the sum of squared segments to the line formed by the main eigenvector:
 
-> sum((ss$x1 - ss$x0)^2 + (ss$y1 - ss$y0)^2)
+sum((ss$x1 - ss$x0)^2 + (ss$y1 - ss$y0)^2)
 # [1] 9.850096
 
 
